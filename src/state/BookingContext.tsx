@@ -8,6 +8,10 @@ interface BookingState {
   durationMins: number;
   selectedCourtId: number | null;
   receiptId: string;
+  wantsShareInvite: boolean;
+  invitePlayerCount: number;
+  inviteNotes: string;
+  inviteCreatedId: string | null;
 }
 
 interface BookingActions {
@@ -15,6 +19,10 @@ interface BookingActions {
   setStartTime: (time: string) => void;
   setDuration: (mins: number) => void;
   selectCourt: (id: number | null) => void;
+  setWantsShareInvite: (v: boolean) => void;
+  setInvitePlayerCount: (n: number) => void;
+  setInviteNotes: (s: string) => void;
+  markInviteCreated: (id: string | null) => void;
   reset: () => void;
 }
 
@@ -37,6 +45,10 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [durationMins, setDuration] = useState(60);
   const [selectedCourtId, selectCourt] = useState<number | null>(null);
   const [receiptId, setReceiptId] = useState(randomReceiptId());
+  const [wantsShareInvite, setWantsShareInvite] = useState(false);
+  const [invitePlayerCount, setInvitePlayerCount] = useState(4);
+  const [inviteNotes, setInviteNotes] = useState('');
+  const [inviteCreatedId, setInviteCreatedId] = useState<string | null>(null);
 
   const value = useMemo<BookingContextValue>(
     () => ({
@@ -46,20 +58,42 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       durationMins,
       selectedCourtId,
       receiptId,
+      wantsShareInvite,
+      invitePlayerCount,
+      inviteNotes,
+      inviteCreatedId,
       selectedDate: DEFAULT_DATES.find((d) => d.iso === selectedDateIso),
       setSelectedDate: setSelectedDateIso,
       setStartTime,
       setDuration,
       selectCourt,
+      setWantsShareInvite,
+      setInvitePlayerCount,
+      setInviteNotes,
+      markInviteCreated: setInviteCreatedId,
       reset: () => {
         setSelectedDateIso(DEFAULT_DATES[0].iso);
         setStartTime('14:00');
         setDuration(60);
         selectCourt(null);
         setReceiptId(randomReceiptId());
+        setWantsShareInvite(false);
+        setInvitePlayerCount(4);
+        setInviteNotes('');
+        setInviteCreatedId(null);
       },
     }),
-    [selectedDateIso, startTime, durationMins, selectedCourtId, receiptId],
+    [
+      selectedDateIso,
+      startTime,
+      durationMins,
+      selectedCourtId,
+      receiptId,
+      wantsShareInvite,
+      invitePlayerCount,
+      inviteNotes,
+      inviteCreatedId,
+    ],
   );
 
   return <BookingContext.Provider value={value}>{children}</BookingContext.Provider>;

@@ -83,7 +83,16 @@ function Confetti() {
 
 export function Receipt() {
   const navigate = useNavigate();
-  const { selectedCourtId, selectedDate, startTime, durationMins, receiptId, reset } = useBooking();
+  const {
+    selectedCourtId,
+    selectedDate,
+    startTime,
+    durationMins,
+    receiptId,
+    inviteCreatedId,
+    invitePlayerCount,
+    reset,
+  } = useBooking();
 
   useEffect(() => {
     if (!selectedCourtId) navigate('/', { replace: true });
@@ -108,6 +117,26 @@ export function Receipt() {
             Your court is ready for action. See you there!
           </p>
         </section>
+
+        {inviteCreatedId && (
+          <button
+            onClick={() => navigate('/partners')}
+            className="mb-xl flex items-center gap-md rounded-xl border border-primary/30 bg-primary-fixed/40 p-md text-left shadow-elevated transition active:scale-[0.99]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-on-primary">
+              <Icon name="groups" filled />
+            </span>
+            <div className="flex-1">
+              <p className="font-headline text-headline-md leading-tight text-primary">
+                Your open invite is live
+              </p>
+              <p className="font-label text-label-sm text-on-surface-variant">
+                Up to {invitePlayerCount - 1} player{invitePlayerCount - 1 === 1 ? '' : 's'} can join via Find Partner.
+              </p>
+            </div>
+            <Icon name="chevron_right" className="text-primary" />
+          </button>
+        )}
 
         <section className="relative mb-xl flex flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-receipt">
           <div className="h-2 w-full bg-secondary" />

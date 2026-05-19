@@ -6,11 +6,25 @@ import { PriceCard } from '../components/PriceCard';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
 import { priceFor, useBooking } from '../state/BookingContext';
+import { useInvites } from '../state/InvitesContext';
 import { addMinutes, courts, formatDuration } from '../data/courts';
 
 export function BookingSummary() {
   const navigate = useNavigate();
-  const { selectedCourtId, selectedDate, startTime, durationMins } = useBooking();
+  const {
+    selectedCourtId,
+    selectedDate,
+    startTime,
+    durationMins,
+    wantsShareInvite,
+    setWantsShareInvite,
+    invitePlayerCount,
+    setInvitePlayerCount,
+    inviteNotes,
+    setInviteNotes,
+    markInviteCreated,
+  } = useBooking();
+  const { createInvite } = useInvites();
 
   useEffect(() => {
     if (!selectedCourtId) navigate('/courts', { replace: true });
@@ -19,6 +33,27 @@ export function BookingSummary() {
   const court = courts.find((c) => c.id === selectedCourtId);
   const endTime = addMinutes(startTime, durationMins);
   const total = priceFor(court, durationMins);
+
+  const handleConfirm = () => {
+    if (wantsShareInvite && court && selectedDate) {
+      const invite = createInvite({
+        courtName: court.name,
+        courtType: court.type,
+        dateIso: selectedDate.iso,
+        dateLabel: selectedDate.fullLabel,
+        startTime,
+        endTime,
+        durationMins,
+        totalPlayers: invitePlayerCount,
+        skillLevel: 'Open',
+        notes: inviteNotes.trim() || undefined,
+      });
+      markInviteCreated(invite.id);
+    } else {
+      markInviteCreated(null);
+    }
+    navigate('/receipt');
+  };
 
   return (
     <div className="min-h-dvh bg-surface pb-36 text-on-surface">
@@ -52,6 +87,15 @@ export function BookingSummary() {
           </div>
         </section>
 
+        <ShareInviteSection
+          enabled={wantsShareInvite}
+          onToggle={setWantsShareInvite}
+          playerCount={invitePlayerCount}
+          onChangePlayerCount={setInvitePlayerCount}
+          notes={inviteNotes}
+          onChangeNotes={setInviteNotes}
+        />
+
         <PriceCard
           title="Pricing Breakdown"
           subtitle="Total"
@@ -66,7 +110,7 @@ export function BookingSummary() {
 
       <BottomActionBar caption="Selected Window" primaryText={`${startTime} - ${endTime}`}>
         <button
-          onClick={() => navigate('/receipt')}
+          onClick={handleConfirm}
           className="flex items-center gap-sm rounded-xl bg-secondary-fixed px-xl py-md font-label text-label-lg font-bold text-on-secondary-fixed shadow-elevated transition-all hover:bg-secondary-fixed-dim active:scale-95"
         >
           <span>Confirm &amp; Pay</span>
@@ -77,6 +121,121 @@ export function BookingSummary() {
   );
 }
 
+function ShareInviteSection({
+  enabled,
+  onToggle,
+  playerCount,
+  onChangePlayerCount,
+  notes,
+  onChangeNotes,
+}: {
+  enabled: boolean;
+  onToggle: (v: boolean) => void;
+  playerCount: number;
+  onChangePlayerCount: (n: number) => void;
+  notes: string;
+  onChangeNotes: (s: string) => void;
+}) {
+  const slotsLeft = Math.max(0, playerCount - 1);
+  return (
+    <section className="space-y-md">
+      <div
+        className={`overflow-hidden rounded-xl border bg-surface-container-lowest shadow-elevated transition-colors ${
+          enabled ? 'border-primary/40' : 'border-outline-variant/20'
+        }`}
+      >
+        <div className="flex items-start gap-md p-md">
+          <span
+            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${
+              enabled ? 'bg-primary text-on-primary' : 'bg-secondary-container text-on-secondary-container'
+            }`}
+          >
+            <Icon name="groups" filled={enabled} />
+          </span>
+          <div className="flex-1">
+            <p className="font-headline text-headline-md leading-tight text-primary">
+              Open this slot to others
+            </p>
+            <p className="font-label text-label-sm text-on-surface-variant">
+              Post your booking to Find Partner. Players can join until the court is full.
+            </p>
+          </div>
+          <button
+            onClick={() => onToggle(!enabled)}
+            role="switch"
+            aria-checked={enabled}
+            className={`relative inline-flex h-8 w-14 flex-shrink-0 rounded-full transition-colors ${
+              enabled ? 'bg-primary' : 'bg-outline-variant'
+            }`}
+          >
+            <span
+              className={`absolute left-0.5 top-0.5 h-7 w-7 rounded-full bg-white shadow-md transition-transform ${
+                enabled ? 'translate-x-6' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {enabled && (
+          <div className="space-y-md border-t border-outline-variant/30 p-md">
+            <div>
+              <div className="mb-sm flex items-center justify-between">
+                <p className="font-label text-label-lg text-primary">Total players</p>
+                <span className="rounded-full bg-secondary-fixed px-3 py-0.5 font-label text-label-sm font-bold text-on-secondary-fixed">
+                  {slotsLeft} slot{slotsLeft === 1 ? '' : 's'} open
+                </span>
+              </div>
+              <div className="flex items-center gap-sm">
+                <button
+                  onClick={() => onChangePlayerCount(Math.max(2, playerCount - 1))}
+                  disabled={playerCount <= 2}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/40 bg-white text-primary shadow-elevated transition active:scale-90 disabled:opacity-40"
+                  aria-label="decrease"
+                >
+                  <Icon name="remove" />
+                </button>
+                <div className="flex flex-1 items-center justify-center rounded-md bg-surface-container py-sm">
+                  <span className="font-display text-headline-md text-primary">{playerCount}</span>
+                  <span className="ml-xs font-label text-label-sm text-on-surface-variant">
+                    players incl. you
+                  </span>
+                </div>
+                <button
+                  onClick={() => onChangePlayerCount(Math.min(6, playerCount + 1))}
+                  disabled={playerCount >= 6}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/40 bg-white text-primary shadow-elevated transition active:scale-90 disabled:opacity-40"
+                  aria-label="increase"
+                >
+                  <Icon name="add" />
+                </button>
+              </div>
+            </div>
+
+            <label className="block">
+              <p className="mb-xs font-label text-label-lg text-primary">Note for joiners (optional)</p>
+              <textarea
+                value={notes}
+                onChange={(e) => onChangeNotes(e.target.value)}
+                maxLength={140}
+                rows={2}
+                placeholder="e.g. casual doubles, bring water"
+                className="w-full resize-none rounded-md border border-outline-variant bg-white px-sm py-sm font-body text-body-md text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+              <p className="mt-xs text-right font-label text-label-sm text-outline">
+                {notes.length}/140
+              </p>
+            </label>
+
+            <p className="flex items-center gap-xs font-label text-label-sm text-on-surface-variant">
+              <Icon name="lock_open" className="text-base text-primary" />
+              Stops accepting new players once {playerCount} have joined.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 function DetailRow({
   label,
   value,
