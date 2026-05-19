@@ -93,8 +93,8 @@ export function Profile() {
         </div>
       </section>
 
-      <main className="mx-auto -mt-lg max-w-screen-sm space-y-lg px-container-padding">
-        <section className="grid grid-cols-3 gap-gutter rounded-xl border border-outline-variant/20 bg-surface-container-lowest p-md shadow-elevated">
+      <main className="mx-auto -mt-md max-w-screen-sm space-y-lg px-container-padding">
+        <section className="grid grid-cols-3 gap-gutter rounded-xl border border-outline-variant/20 bg-surface-container-lowest px-md pb-md pt-xl shadow-elevated">
           {stats.map((s) => (
             <div key={s.label} className="flex flex-col items-center text-center">
               <span className="font-display text-headline-md text-primary">{s.value}</span>
