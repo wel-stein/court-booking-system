@@ -19,28 +19,26 @@ export const courts: Court[] = [
 ];
 
 export const timeSlots = [
-  '08:00',
-  '08:30',
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '12:00',
-  '12:30',
-  '13:00',
-  '13:30',
-  '17:00',
-  '17:30',
-  '18:00',
-  '18:30',
-  '19:00',
-  '19:30',
+  // Afternoon
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  // Evening
+  '20:00',
+  '20:30',
+  '21:00',
+  '21:30',
+  '22:00',
+  '22:30',
+  '23:00',
+  '23:30',
 ];
 
 // Slots blocked across the venue at given start times
-export const blockedSlots = new Set<string>(['11:00', '13:00']);
+export const blockedSlots = new Set<string>(['15:00', '22:00']);
 
 export interface DateOption {
   iso: string;

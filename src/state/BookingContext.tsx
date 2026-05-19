@@ -33,7 +33,7 @@ function randomReceiptId() {
 
 export function BookingProvider({ children }: { children: ReactNode }) {
   const [selectedDateIso, setSelectedDateIso] = useState(DEFAULT_DATES[0].iso);
-  const [startTime, setStartTime] = useState('09:00');
+  const [startTime, setStartTime] = useState('14:00');
   const [durationMins, setDuration] = useState(60);
   const [selectedCourtId, selectCourt] = useState<number | null>(null);
   const [receiptId, setReceiptId] = useState(randomReceiptId());
@@ -53,7 +53,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       selectCourt,
       reset: () => {
         setSelectedDateIso(DEFAULT_DATES[0].iso);
-        setStartTime('09:00');
+        setStartTime('14:00');
         setDuration(60);
         selectCourt(null);
         setReceiptId(randomReceiptId());
