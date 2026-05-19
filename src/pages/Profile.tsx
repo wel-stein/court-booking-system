@@ -49,7 +49,7 @@ export function Profile() {
 
   return (
     <div className="min-h-dvh bg-surface pb-28 text-on-surface">
-      <section className="relative overflow-hidden bg-primary px-container-padding pb-xl pt-xl text-on-primary">
+      <section className="relative overflow-hidden bg-primary px-container-padding pb-12 pt-10 text-on-primary">
         <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-primary-container opacity-50" />
         <div className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-on-primary/10" />
 
@@ -69,7 +69,7 @@ export function Profile() {
           </button>
         </div>
 
-        <div className="relative z-10 mt-lg flex items-center gap-md">
+        <div className="relative z-10 mt-xl flex items-center gap-lg">
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-on-primary/20 bg-secondary-fixed text-on-secondary-fixed">
               <span className="font-display text-display-lg leading-none">AS</span>
@@ -81,7 +81,7 @@ export function Profile() {
               <Icon name="photo_camera" />
             </button>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 space-y-xs">
             <p className="font-label text-label-sm uppercase tracking-widest opacity-80">
               AcePoint Pro Member
             </p>
@@ -240,13 +240,13 @@ function Toggle({
         onClick={() => onChange(!value)}
         role="switch"
         aria-checked={value}
-        className={`relative h-7 w-12 flex-shrink-0 rounded-full transition-colors ${
+        className={`relative inline-flex h-8 w-14 flex-shrink-0 rounded-full transition-colors ${
           value ? 'bg-primary' : 'bg-outline-variant'
         }`}
       >
         <span
-          className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform ${
-            value ? 'translate-x-5' : 'translate-x-0.5'
+          className={`absolute left-0.5 top-0.5 h-7 w-7 rounded-full bg-white shadow-md transition-transform ${
+            value ? 'translate-x-6' : 'translate-x-0'
           }`}
         />
       </button>
