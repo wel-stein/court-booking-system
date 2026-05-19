@@ -19,6 +19,17 @@ export const courts: Court[] = [
 ];
 
 export const timeSlots = [
+  // Morning
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
   // Afternoon
   '14:00',
   '14:30',
@@ -38,7 +49,7 @@ export const timeSlots = [
 ];
 
 // Slots blocked across the venue at given start times
-export const blockedSlots = new Set<string>(['15:00', '22:00']);
+export const blockedSlots = new Set<string>(['11:00', '15:00', '22:00']);
 
 export interface DateOption {
   iso: string;
