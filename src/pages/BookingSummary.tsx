@@ -5,8 +5,9 @@ import { ProgressBar } from '../components/ProgressBar';
 import { PriceCard } from '../components/PriceCard';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
+import { SkillLevelPicker } from '../components/SkillLevelPicker';
 import { priceFor, useBooking } from '../state/BookingContext';
-import { useInvites } from '../state/InvitesContext';
+import { useInvites, type SkillLevel } from '../state/InvitesContext';
 import { addMinutes, courts, formatDuration } from '../data/courts';
 
 export function BookingSummary() {
@@ -22,6 +23,8 @@ export function BookingSummary() {
     setInvitePlayerCount,
     inviteNotes,
     setInviteNotes,
+    inviteSkillLevel,
+    setInviteSkillLevel,
     markInviteCreated,
   } = useBooking();
   const { createInvite } = useInvites();
@@ -45,7 +48,7 @@ export function BookingSummary() {
         endTime,
         durationMins,
         totalPlayers: invitePlayerCount,
-        skillLevel: 'Open',
+        skillLevel: inviteSkillLevel,
         notes: inviteNotes.trim() || undefined,
       });
       markInviteCreated(invite.id);
@@ -92,6 +95,8 @@ export function BookingSummary() {
           onToggle={setWantsShareInvite}
           playerCount={invitePlayerCount}
           onChangePlayerCount={setInvitePlayerCount}
+          skillLevel={inviteSkillLevel}
+          onChangeSkillLevel={setInviteSkillLevel}
           notes={inviteNotes}
           onChangeNotes={setInviteNotes}
         />
@@ -126,6 +131,8 @@ function ShareInviteSection({
   onToggle,
   playerCount,
   onChangePlayerCount,
+  skillLevel,
+  onChangeSkillLevel,
   notes,
   onChangeNotes,
 }: {
@@ -133,6 +140,8 @@ function ShareInviteSection({
   onToggle: (v: boolean) => void;
   playerCount: number;
   onChangePlayerCount: (n: number) => void;
+  skillLevel: SkillLevel;
+  onChangeSkillLevel: (s: SkillLevel) => void;
   notes: string;
   onChangeNotes: (s: string) => void;
 }) {
@@ -210,6 +219,8 @@ function ShareInviteSection({
                 </button>
               </div>
             </div>
+
+            <SkillLevelPicker value={skillLevel} onChange={onChangeSkillLevel} />
 
             <label className="block">
               <p className="mb-xs font-label text-label-lg text-primary">Note for joiners (optional)</p>

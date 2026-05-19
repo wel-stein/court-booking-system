@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { buildUpcomingDates, type Court, type DateOption } from '../data/courts';
+import type { SkillLevel } from './InvitesContext';
 
 interface BookingState {
   dates: DateOption[];
@@ -11,6 +12,7 @@ interface BookingState {
   wantsShareInvite: boolean;
   invitePlayerCount: number;
   inviteNotes: string;
+  inviteSkillLevel: SkillLevel;
   inviteCreatedId: string | null;
 }
 
@@ -22,6 +24,7 @@ interface BookingActions {
   setWantsShareInvite: (v: boolean) => void;
   setInvitePlayerCount: (n: number) => void;
   setInviteNotes: (s: string) => void;
+  setInviteSkillLevel: (s: SkillLevel) => void;
   markInviteCreated: (id: string | null) => void;
   reset: () => void;
 }
@@ -48,6 +51,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [wantsShareInvite, setWantsShareInvite] = useState(false);
   const [invitePlayerCount, setInvitePlayerCount] = useState(4);
   const [inviteNotes, setInviteNotes] = useState('');
+  const [inviteSkillLevel, setInviteSkillLevel] = useState<SkillLevel>('Open');
   const [inviteCreatedId, setInviteCreatedId] = useState<string | null>(null);
 
   const value = useMemo<BookingContextValue>(
@@ -61,6 +65,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       wantsShareInvite,
       invitePlayerCount,
       inviteNotes,
+      inviteSkillLevel,
       inviteCreatedId,
       selectedDate: DEFAULT_DATES.find((d) => d.iso === selectedDateIso),
       setSelectedDate: setSelectedDateIso,
@@ -70,6 +75,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       setWantsShareInvite,
       setInvitePlayerCount,
       setInviteNotes,
+      setInviteSkillLevel,
       markInviteCreated: setInviteCreatedId,
       reset: () => {
         setSelectedDateIso(DEFAULT_DATES[0].iso);
@@ -80,6 +86,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         setWantsShareInvite(false);
         setInvitePlayerCount(4);
         setInviteNotes('');
+        setInviteSkillLevel('Open');
         setInviteCreatedId(null);
       },
     }),
@@ -92,6 +99,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       wantsShareInvite,
       invitePlayerCount,
       inviteNotes,
+      inviteSkillLevel,
       inviteCreatedId,
     ],
   );

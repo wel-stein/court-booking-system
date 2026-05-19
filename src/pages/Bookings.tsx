@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { BottomNav } from '../components/BottomNav';
 import { Icon } from '../components/Icon';
 import { addMinutes, formatDuration } from '../data/courts';
-import { useInvites, type Invite } from '../state/InvitesContext';
+import { SkillLevelPicker } from '../components/SkillLevelPicker';
+import { useInvites, type Invite, type SkillLevel } from '../state/InvitesContext';
 
 interface BookingEntry {
   id: string;
@@ -119,7 +120,12 @@ export function Bookings() {
   const upcoming = bookings.filter((b) => b.status === 'upcoming');
   const past = bookings.filter((b) => b.status === 'past');
 
-  const handleShare = (b: BookingEntry, totalPlayers: number, notes: string) => {
+  const handleShare = (
+    b: BookingEntry,
+    totalPlayers: number,
+    skillLevel: SkillLevel,
+    notes: string,
+  ) => {
     createInvite({
       courtName: b.courtName,
       courtType: b.courtType,
@@ -129,7 +135,7 @@ export function Bookings() {
       endTime: b.endTime,
       durationMins: b.durationMins,
       totalPlayers,
-      skillLevel: 'Open',
+      skillLevel,
       notes: notes.trim() || undefined,
     });
     setSharingBooking(null);
@@ -207,7 +213,9 @@ export function Bookings() {
         <ShareInviteSheet
           booking={sharingBooking}
           onClose={() => setSharingBooking(null)}
-          onSubmit={(count, notes) => handleShare(sharingBooking, count, notes)}
+          onSubmit={(count, skillLevel, notes) =>
+            handleShare(sharingBooking, count, skillLevel, notes)
+          }
         />
       )}
     </div>
@@ -335,6 +343,9 @@ function SharedInviteBanner({
             {filled} / {total} players · {isFull ? 'No new joiners' : `${total - filled} slot${total - filled === 1 ? '' : 's'} open`}
           </p>
         </div>
+        <span className="rounded-full bg-secondary-container px-2 py-0.5 font-label text-label-sm font-bold uppercase tracking-wider text-on-secondary-container">
+          {invite.skillLevel === 'Open' ? 'Open for all' : invite.skillLevel}
+        </span>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-container-highest">
         <div
@@ -368,9 +379,10 @@ function ShareInviteSheet({
 }: {
   booking: BookingEntry;
   onClose: () => void;
-  onSubmit: (totalPlayers: number, notes: string) => void;
+  onSubmit: (totalPlayers: number, skillLevel: SkillLevel, notes: string) => void;
 }) {
   const [count, setCount] = useState(4);
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>('Open');
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
@@ -449,6 +461,8 @@ function ShareInviteSheet({
             </div>
           </div>
 
+          <SkillLevelPicker value={skillLevel} onChange={setSkillLevel} />
+
           <label className="block">
             <p className="mb-xs font-label text-label-lg text-primary">
               Note for joiners (optional)
@@ -473,7 +487,7 @@ function ShareInviteSheet({
         </div>
 
         <button
-          onClick={() => onSubmit(count, notes)}
+          onClick={() => onSubmit(count, skillLevel, notes)}
           className="mt-lg flex w-full items-center justify-center gap-sm rounded-xl bg-primary px-md py-md font-label text-label-lg text-on-primary shadow-elevated transition active:scale-95"
         >
           <Icon name="campaign" />
