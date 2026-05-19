@@ -3,7 +3,7 @@ import { TopAppBar } from '../components/TopAppBar';
 import { ProgressBar } from '../components/ProgressBar';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
-import { useBooking } from '../state/BookingContext';
+import { priceFor, useBooking } from '../state/BookingContext';
 import { addMinutes, courts, type Court } from '../data/courts';
 
 const statusBarColor: Record<Court['status'], string> = {
@@ -21,14 +21,17 @@ const statusLabelColor: Record<Court['status'], string> = {
 function CourtCard({
   court,
   selected,
+  durationMins,
   onSelect,
 }: {
   court: Court;
   selected: boolean;
+  durationMins: number;
   onSelect: (id: number) => void;
 }) {
-  const baseFrame =
-    'relative aspect-[3/4] rounded-xl overflow-hidden transition-all';
+  const baseFrame = 'relative aspect-[3/4] rounded-xl overflow-hidden transition-all';
+  const total = priceFor(court, durationMins);
+
   if (court.status === 'maintenance') {
     return (
       <div
@@ -37,10 +40,14 @@ function CourtCard({
         <div className={`absolute left-0 top-0 h-1.5 w-full ${statusBarColor[court.status]}`} />
         <div className="flex h-full flex-col justify-between p-md">
           <div>
-            <span className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}>
+            <span
+              className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}
+            >
               {court.name}
             </span>
-            <p className="mt-xs font-headline text-headline-md text-on-surface-variant">{court.type}</p>
+            <p className="mt-xs font-headline text-headline-md text-on-surface-variant">
+              {court.type}
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <span className="font-label text-label-sm text-outline">{court.amenities}</span>
@@ -50,20 +57,30 @@ function CourtCard({
       </div>
     );
   }
+
   if (court.status === 'booked') {
     return (
       <div className={`${baseFrame} bg-surface-container-low opacity-60 shadow-sm`}>
         <div className={`absolute left-0 top-0 h-1.5 w-full ${statusBarColor[court.status]}`} />
         <div className="flex h-full flex-col justify-between p-md">
           <div>
-            <span className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}>
+            <span
+              className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}
+            >
               {court.name}
             </span>
-            <p className="mt-xs font-headline text-headline-md text-on-surface-variant">{court.type}</p>
+            <p className="mt-xs font-headline text-headline-md text-on-surface-variant">
+              {court.type}
+            </p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="font-label text-label-sm text-outline">{court.amenities}</span>
-            <Icon name="lock" filled className="text-error" />
+          <div className="space-y-xs">
+            <span className="font-label text-label-sm text-outline line-through">
+              ${court.ratePer30Min} / 30 min
+            </span>
+            <div className="flex items-center justify-between">
+              <span className="font-label text-label-sm text-outline">{court.amenities}</span>
+              <Icon name="lock" filled className="text-error" />
+            </div>
           </div>
         </div>
       </div>
@@ -80,21 +97,33 @@ function CourtCard({
       <div className={`absolute left-0 top-0 h-1.5 w-full ${statusBarColor[court.status]}`} />
       <div className="flex h-full flex-col justify-between p-md text-left">
         <div>
-          <span className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}>
+          <span
+            className={`font-label text-label-lg uppercase tracking-wider ${statusLabelColor[court.status]}`}
+          >
             {court.name}
           </span>
           <p className="mt-xs font-headline text-headline-md text-on-surface">{court.type}</p>
         </div>
-        <div className="flex items-end justify-between">
-          <span className="font-label text-label-sm text-outline">{court.amenities}</span>
-          <Icon
-            name="check_circle"
-            filled
-            className={`text-primary transition-opacity ${selected ? 'opacity-100' : 'opacity-0'}`}
-          />
+        <div className="space-y-xs">
+          <div className="flex items-baseline gap-xs">
+            <span className="font-display text-headline-md text-primary">${total.toFixed(0)}</span>
+            <span className="font-label text-label-sm text-outline">
+              · ${court.ratePer30Min}/30m
+            </span>
+          </div>
+          <div className="flex items-end justify-between">
+            <span className="font-label text-label-sm text-outline">{court.amenities}</span>
+            <Icon
+              name="check_circle"
+              filled
+              className={`text-primary transition-opacity ${selected ? 'opacity-100' : 'opacity-0'}`}
+            />
+          </div>
         </div>
       </div>
-      {selected && <div className="active-court-glow pointer-events-none absolute inset-0 rounded-xl" />}
+      {selected && (
+        <div className="active-court-glow pointer-events-none absolute inset-0 rounded-xl" />
+      )}
     </button>
   );
 }
@@ -151,6 +180,7 @@ export function SelectCourt() {
             <CourtCard
               key={court.id}
               court={court}
+              durationMins={durationMins}
               selected={selectedCourtId === court.id}
               onSelect={(id) => selectCourt(id === selectedCourtId ? null : id)}
             />
