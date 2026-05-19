@@ -75,7 +75,7 @@ function CourtCard({
           </div>
           <div className="space-y-xs">
             <span className="font-label text-label-sm text-outline line-through">
-              ${court.ratePer30Min} / 30 min
+              ${total.toFixed(0)} · {formatDuration(durationMins)}
             </span>
             <div className="flex items-center justify-between">
               <span className="font-label text-label-sm text-outline">{court.amenities}</span>
@@ -108,7 +108,7 @@ function CourtCard({
           <div className="flex items-baseline gap-xs">
             <span className="font-display text-headline-md text-primary">${total.toFixed(0)}</span>
             <span className="font-label text-label-sm text-outline">
-              · ${court.ratePer30Min}/30m
+              · {formatDuration(durationMins)}
             </span>
           </div>
           <div className="flex items-end justify-between">
