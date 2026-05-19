@@ -15,8 +15,13 @@ export function Home() {
             </p>
             <h1 className="font-display text-display-lg text-primary">AcePoint</h1>
           </div>
-          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container-lowest text-primary shadow-elevated transition active:scale-95">
+          <button
+            onClick={() => navigate('/notifications')}
+            className="relative flex h-12 w-12 items-center justify-center rounded-full bg-surface-container-lowest text-primary shadow-elevated transition active:scale-95"
+            aria-label="notifications"
+          >
             <Icon name="notifications" />
+            <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-surface-container-lowest bg-tertiary-container" />
           </button>
         </div>
         <p className="mt-sm font-body text-body-md text-on-surface-variant">
@@ -51,17 +56,22 @@ export function Home() {
             <h3 className="font-headline text-headline-md text-primary">Quick actions</h3>
           </div>
           <div className="grid grid-cols-2 gap-gutter">
-            <QuickAction icon="calendar_today" label="My Bookings" />
-            <QuickAction icon="groups" label="Find Partner" />
-            <QuickAction icon="military_tech" label="Tournaments" />
-            <QuickAction icon="store" label="Pro Shop" />
+            <QuickAction icon="calendar_today" label="My Bookings" onClick={() => navigate('/bookings')} />
+            <QuickAction icon="groups" label="Find Partner" onClick={() => navigate('/bookings')} />
+            <QuickAction icon="military_tech" label="Tournaments" onClick={() => navigate('/bookings')} />
+            <QuickAction icon="store" label="Pro Shop" onClick={() => navigate('/shop')} />
           </div>
         </section>
 
         <section>
           <div className="mb-sm flex items-center justify-between">
             <h3 className="font-headline text-headline-md text-primary">Upcoming session</h3>
-            <button className="font-label text-label-lg text-primary">View all</button>
+            <button
+              onClick={() => navigate('/bookings')}
+              className="font-label text-label-lg text-primary"
+            >
+              View all
+            </button>
           </div>
           <div className="rounded-xl bg-surface-container-lowest p-md shadow-elevated">
             <div className="flex items-center justify-between">
@@ -88,9 +98,20 @@ export function Home() {
   );
 }
 
-function QuickAction({ icon, label }: { icon: string; label: string }) {
+function QuickAction({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: string;
+  label: string;
+  onClick?: () => void;
+}) {
   return (
-    <button className="flex flex-col items-start gap-sm rounded-xl bg-surface-container-lowest p-md text-left shadow-elevated transition active:scale-[0.98]">
+    <button
+      onClick={onClick}
+      className="flex flex-col items-start gap-sm rounded-xl bg-surface-container-lowest p-md text-left shadow-elevated transition active:scale-[0.98]"
+    >
       <span className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
         <Icon name={icon} />
       </span>
