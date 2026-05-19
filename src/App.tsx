@@ -8,6 +8,7 @@ import { Bookings } from './pages/Bookings';
 import { ProShop } from './pages/ProShop';
 import { Profile } from './pages/Profile';
 import { Notifications } from './pages/Notifications';
+import { FindPartner } from './pages/FindPartner';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/summary" element={<BookingSummary />} />
         <Route path="/receipt" element={<Receipt />} />
         <Route path="/shop" element={<ProShop />} />
+        <Route path="/partners" element={<FindPartner />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="*" element={<Navigate to="/" replace />} />

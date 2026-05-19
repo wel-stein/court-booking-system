@@ -57,7 +57,7 @@ export function Home() {
           </div>
           <div className="grid grid-cols-2 gap-gutter">
             <QuickAction icon="calendar_today" label="My Bookings" onClick={() => navigate('/bookings')} />
-            <QuickAction icon="groups" label="Find Partner" onClick={() => navigate('/bookings')} />
+            <QuickAction icon="groups" label="Find Partner" onClick={() => navigate('/partners')} />
             <QuickAction icon="military_tech" label="Tournaments" onClick={() => navigate('/bookings')} />
             <QuickAction icon="store" label="Pro Shop" onClick={() => navigate('/shop')} />
           </div>
