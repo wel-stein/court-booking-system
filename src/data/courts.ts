@@ -1,0 +1,94 @@
+export type CourtStatus = 'available' | 'booked' | 'maintenance';
+
+export interface Court {
+  id: number;
+  name: string;
+  type: string;
+  amenities: string;
+  status: CourtStatus;
+  ratePer30Min: number;
+}
+
+export const courts: Court[] = [
+  { id: 1, name: 'Court 1', type: 'Premium PVC', amenities: 'Indoor • A/C', status: 'available', ratePer30Min: 12 },
+  { id: 2, name: 'Court 2', type: 'Professional', amenities: 'Reserved', status: 'booked', ratePer30Min: 14 },
+  { id: 3, name: 'Court 3', type: 'Premium PVC', amenities: 'Indoor • A/C', status: 'available', ratePer30Min: 12 },
+  { id: 4, name: 'Court 4', type: 'Maintenance', amenities: 'Under Repair', status: 'maintenance', ratePer30Min: 0 },
+  { id: 5, name: 'Court 5', type: 'Wooden', amenities: 'Indoor • Fan', status: 'available', ratePer30Min: 10 },
+  { id: 6, name: 'Court 6', type: 'Wooden', amenities: 'Indoor • Fan', status: 'available', ratePer30Min: 10 },
+];
+
+export const timeSlots = [
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
+  '19:30',
+];
+
+// Slots blocked across the venue at given start times
+export const blockedSlots = new Set<string>(['11:00', '13:00']);
+
+export interface DateOption {
+  iso: string;
+  day: string;
+  date: number;
+  monthLabel: string;
+  weekdayLong: string;
+  fullLabel: string;
+}
+
+const WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+export function buildUpcomingDates(count = 14, start: Date = new Date()): DateOption[] {
+  const result: DateOption[] = [];
+  for (let i = 0; i < count; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    result.push({
+      iso: d.toISOString().slice(0, 10),
+      day: WEEKDAYS_SHORT[d.getDay()],
+      date: d.getDate(),
+      monthLabel: `${MONTHS[d.getMonth()]} ${d.getFullYear()}`,
+      weekdayLong: WEEKDAYS_LONG[d.getDay()],
+      fullLabel: `${WEEKDAYS_LONG[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`,
+    });
+  }
+  return result;
+}
+
+export function addMinutes(time: string, mins: number): string {
+  const [h, m] = time.split(':').map(Number);
+  const total = h * 60 + m + mins;
+  const eh = Math.floor((total % (24 * 60)) / 60);
+  const em = total % 60;
+  return `${String(eh).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
+}
