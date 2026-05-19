@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { TopAppBar } from '../components/TopAppBar';
 import { ProgressBar } from '../components/ProgressBar';
-import { BottomNav } from '../components/BottomNav';
+import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
 import { useBooking } from '../state/BookingContext';
 import { addMinutes, courts, type Court } from '../data/courts';
@@ -108,7 +108,7 @@ export function SelectCourt() {
     : '';
 
   return (
-    <div className="min-h-dvh bg-background pb-32 text-on-background">
+    <div className="min-h-dvh bg-background pb-36 text-on-background">
       <TopAppBar title="Select Court" />
       <ProgressBar step={2} />
       <div className="fixed left-0 right-0 top-[68px] z-30 mx-auto max-w-screen-sm bg-primary-container px-container-padding py-3 text-on-primary-container shadow-elevated">
@@ -173,21 +173,16 @@ export function SelectCourt() {
         </section>
       </main>
 
-      <div
-        className={`fixed bottom-24 right-container-padding z-40 mx-auto max-w-screen-sm transition-all duration-300 ${
-          selectedCourtId ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-32 opacity-0'
-        }`}
-      >
+      <BottomActionBar caption="Selected Window" primaryText={`${startTime} - ${endTime}`}>
         <button
           onClick={() => navigate('/summary')}
-          className="flex items-center gap-sm rounded-full border border-on-secondary-container/10 bg-secondary-container px-lg py-md font-headline text-headline-md text-on-secondary-container shadow-lg active:scale-90"
+          disabled={!selectedCourtId}
+          className="flex items-center gap-sm rounded-xl bg-secondary-fixed px-xl py-md font-label text-label-lg font-bold text-on-secondary-fixed shadow-elevated transition-all hover:bg-secondary-fixed-dim active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
         >
           <span>Proceed</span>
           <Icon name="arrow_forward" />
         </button>
-      </div>
-
-      <BottomNav active="Bookings" />
+      </BottomActionBar>
     </div>
   );
 }
