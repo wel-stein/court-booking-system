@@ -18,35 +18,39 @@ export const courts: Court[] = [
   { id: 6, name: 'Court 6', type: 'Wooden', amenities: 'Indoor • Fan', status: 'available', ratePer30Min: 10 },
 ];
 
-export const timeSlots = [
-  // Morning
-  '08:00',
-  '08:30',
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '12:00',
-  '12:30',
-  // Afternoon
-  '14:00',
-  '14:30',
-  '15:00',
-  '15:30',
-  '16:00',
-  '16:30',
-  // Evening
-  '20:00',
-  '20:30',
-  '21:00',
-  '21:30',
-  '22:00',
-  '22:30',
-  '23:00',
-  '23:30',
+export interface TimeBand {
+  id: 'morning' | 'afternoon' | 'evening';
+  label: string;
+  icon: string;
+  hint: string;
+  slots: string[];
+}
+
+export const timeBands: TimeBand[] = [
+  {
+    id: 'morning',
+    label: 'Morning',
+    icon: 'wb_sunny',
+    hint: '8 AM – 1 PM',
+    slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30'],
+  },
+  {
+    id: 'afternoon',
+    label: 'Afternoon',
+    icon: 'wb_twilight',
+    hint: '2 PM – 5 PM',
+    slots: ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30'],
+  },
+  {
+    id: 'evening',
+    label: 'Evening',
+    icon: 'nights_stay',
+    hint: '8 PM – 12 AM',
+    slots: ['20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'],
+  },
 ];
+
+export const timeSlots: string[] = timeBands.flatMap((b) => b.slots);
 
 // Slots blocked across the venue at given start times
 export const blockedSlots = new Set<string>(['11:00', '15:00', '22:00']);

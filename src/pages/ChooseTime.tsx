@@ -8,7 +8,7 @@ import { PriceCard } from '../components/PriceCard';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
 import { useBooking } from '../state/BookingContext';
-import { addMinutes, blockedSlots, courts, timeSlots } from '../data/courts';
+import { addMinutes, blockedSlots, courts, timeBands } from '../data/courts';
 
 export function ChooseTime() {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export function ChooseTime() {
         </section>
         <DateStrip dates={dates} selectedIso={selectedDateIso} onSelect={setSelectedDate} />
         <TimeSlots
-          slots={timeSlots}
+          bands={timeBands}
           selected={startTime}
           blocked={blockedSlots}
           onSelect={setStartTime}
