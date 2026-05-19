@@ -1,3 +1,4 @@
+import { formatDuration } from '../data/courts';
 import { Icon } from './Icon';
 
 interface DurationPickerProps {
@@ -25,7 +26,7 @@ export function DurationPicker({
       <div className="flex items-center justify-between">
         <h3 className="font-headline text-headline-md text-primary">Duration</h3>
         <span className="rounded-full bg-secondary-fixed px-3 py-1 font-label text-label-lg font-bold text-on-secondary-fixed">
-          {value} MINS
+          {formatDuration(value, true)}
         </span>
       </div>
       <div className="flex items-center justify-between rounded-xl bg-surface-container p-lg shadow-inner">

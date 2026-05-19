@@ -92,3 +92,13 @@ export function addMinutes(time: string, mins: number): string {
   const em = total % 60;
   return `${String(eh).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
 }
+
+export function formatDuration(mins: number, upper = false): string {
+  if (mins <= 30) return upper ? `${mins} MINS` : `${mins} mins`;
+  const hours = Math.floor(mins / 60);
+  const remaining = mins % 60;
+  const hourLabel = upper ? (hours === 1 ? 'HR' : 'HRS') : hours === 1 ? 'hr' : 'hrs';
+  const minLabel = upper ? 'MINS' : 'mins';
+  if (remaining === 0) return `${hours} ${hourLabel}`;
+  return `${hours} ${hourLabel} ${remaining} ${minLabel}`;
+}

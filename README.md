@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# AcePoint — Court Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A mobile-first React web app for booking badminton courts at AcePoint, built from the **Smash & Volley** design system. Pick a date, dial in your start time and duration, choose an available court, review the summary, and walk away with a confirmed receipt — all from your phone.
 
-Currently, two official plugins are available:
+## Highlights
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Mobile-first layout with a max-width "phone frame" that stays centred on tablet/desktop
+- Smash & Volley palette (Deep Court Green primary, Sunset Coral tertiary, Warm Bone surfaces), Lexend headlines, Hanken Grotesk body, Material Symbols icons
+- Multi-step booking flow with shared state via `BookingContext`
+- Booking history, Pro Shop, Profile, and Notifications modules all wired into the bottom nav
 
-## React Compiler
+## Screens
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Route | Screen | Purpose |
+| --- | --- | --- |
+| `/` | Home | Hero CTA, quick actions, upcoming session |
+| `/book` | Choose Time | Date strip, time chips, duration picker, live price |
+| `/courts` | Select Court | Available / Booked / Maintenance grid with action bar |
+| `/summary` | Booking Summary | Final review with pricing breakdown |
+| `/receipt` | Receipt | Animated confetti, QR pass, "Back to Home" |
+| `/bookings` | Bookings | Upcoming + past booking history |
+| `/shop` | Pro Shop | Search, categories, products, sticky cart |
+| `/profile` | Profile | Stats, account menu, notification preferences |
+| `/notifications` | Notifications | Filterable inbox with per-item CTAs |
 
-## Expanding the ESLint configuration
+## Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [Vite](https://vitejs.dev/) + [React 19](https://react.dev/) + TypeScript
+- [Tailwind CSS v3](https://tailwindcss.com/) with custom tokens from the design system
+- [React Router 7](https://reactrouter.com/) for screen routing
+- [Material Symbols Outlined](https://fonts.google.com/icons) via Google Fonts
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev     # start the dev server on http://localhost:5173
+npm run build   # type-check + production build into ./dist
+npm run preview # serve the production build
+npm run lint    # run ESLint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Node 18+ recommended.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── App.tsx                     # Route table
+├── main.tsx                    # Bootstrap, BrowserRouter, BookingProvider
+├── index.css                   # Tailwind base + custom utilities
+├── components/                 # Shared UI (TopAppBar, BottomNav, PriceCard, …)
+├── data/courts.ts              # Mock courts, time slots, date + duration helpers
+├── pages/                      # One file per screen
+└── state/BookingContext.tsx    # Booking flow shared state
+```
+
+## Design tokens
+
+All colours, radii, spacing, and typography in `tailwind.config.js` are sourced from `smash_volley/DESIGN.md` (Material Design 3 tokens). The booking progress bar uses the lime accent (`#d6ec00`) called out in the design notes.
+
+## Conventions
+
+- Mobile-first layout, container padding `20px`, gutter `12px`
+- Rounded shapes: `0.5rem` base, `1rem` for large cards, `1.5rem` for pill inputs
+- Booking state lives in `BookingContext`; screens read/write via the `useBooking()` hook
+- Mock data lives in `src/data/`; replace with API calls when integrating a backend
