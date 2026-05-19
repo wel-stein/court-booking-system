@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BottomNav } from '../components/BottomNav';
 import { Icon } from '../components/Icon';
+import { formatDuration } from '../data/courts';
 
 interface BookingEntry {
   id: string;
@@ -13,14 +15,34 @@ interface BookingEntry {
   price: number;
 }
 
-const bookings: BookingEntry[] = [
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatRelativeDate(daysFromToday: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + daysFromToday);
+  return `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+interface BookingSeed {
+  id: string;
+  court: string;
+  courtType: string;
+  offset: number;
+  time: string;
+  durationMins: number;
+  status: 'upcoming' | 'past';
+  price: number;
+}
+
+const seeds: BookingSeed[] = [
   {
     id: 'ACE-8821',
     court: 'Court 04',
     courtType: 'Professional Grade',
-    date: 'Mon, 23 Oct 2023',
+    offset: 2,
     time: '09:00 - 10:00',
-    duration: '60 mins',
+    durationMins: 60,
     status: 'upcoming',
     price: 24,
   },
@@ -28,9 +50,9 @@ const bookings: BookingEntry[] = [
     id: 'ACE-8744',
     court: 'Court 01',
     courtType: 'Premium PVC',
-    date: 'Wed, 18 Oct 2023',
+    offset: -3,
     time: '19:00 - 20:30',
-    duration: '90 mins',
+    durationMins: 90,
     status: 'past',
     price: 36,
   },
@@ -38,16 +60,30 @@ const bookings: BookingEntry[] = [
     id: 'ACE-8690',
     court: 'Court 05',
     courtType: 'Wooden',
-    date: 'Sat, 14 Oct 2023',
+    offset: -10,
     time: '08:00 - 09:00',
-    duration: '60 mins',
+    durationMins: 60,
     status: 'past',
     price: 20,
   },
 ];
 
+function buildBookings(): BookingEntry[] {
+  return seeds.map((s) => ({
+    id: s.id,
+    court: s.court,
+    courtType: s.courtType,
+    date: formatRelativeDate(s.offset),
+    time: s.time,
+    duration: formatDuration(s.durationMins),
+    status: s.status,
+    price: s.price,
+  }));
+}
+
 export function Bookings() {
   const navigate = useNavigate();
+  const bookings = useMemo(() => buildBookings(), []);
   const upcoming = bookings.filter((b) => b.status === 'upcoming');
   const past = bookings.filter((b) => b.status === 'past');
 

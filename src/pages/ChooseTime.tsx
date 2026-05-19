@@ -7,8 +7,8 @@ import { DurationPicker } from '../components/DurationPicker';
 import { PriceCard } from '../components/PriceCard';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
-import { useBooking, priceFor } from '../state/BookingContext';
-import { addMinutes, blockedSlots, timeSlots } from '../data/courts';
+import { useBooking } from '../state/BookingContext';
+import { addMinutes, blockedSlots, courts, timeSlots } from '../data/courts';
 
 export function ChooseTime() {
   const navigate = useNavigate();
@@ -23,7 +23,10 @@ export function ChooseTime() {
   } = useBooking();
 
   const endTime = addMinutes(startTime, durationMins);
-  const total = priceFor(undefined, durationMins);
+  const cheapestRate = Math.min(
+    ...courts.filter((c) => c.status === 'available').map((c) => c.ratePer30Min),
+  );
+  const total = (durationMins / 30) * cheapestRate;
 
   return (
     <div className="min-h-dvh bg-surface pb-36 text-on-surface">
@@ -51,11 +54,12 @@ export function ChooseTime() {
         <DurationPicker value={durationMins} onChange={setDuration} />
         <PriceCard
           title="Estimated Pricing"
+          subtitle="From"
           total={total}
-          caption="Starting from $12.00 / 30 mins"
+          caption={`Starting from $${cheapestRate.toFixed(2)} / 30 mins`}
           footnotes={[
-            { icon: 'info', label: 'Price may vary based on court type' },
-            { icon: 'bolt', label: 'Select time to unlock court list' },
+            { icon: 'info', label: 'Final price depends on court type' },
+            { icon: 'bolt', label: 'Instant confirmation on selection' },
           ]}
         />
       </main>

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { priceFor, useBooking } from '../state/BookingContext';
-import { addMinutes, courts } from '../data/courts';
+import { addMinutes, courts, formatDuration } from '../data/courts';
 
 const CONFETTI_COLORS = ['#003426', '#4e6359', '#d6ec00', '#99d3ba'];
 
@@ -84,9 +84,16 @@ function Confetti() {
 export function Receipt() {
   const navigate = useNavigate();
   const { selectedCourtId, selectedDate, startTime, durationMins, receiptId, reset } = useBooking();
+
+  useEffect(() => {
+    if (!selectedCourtId) navigate('/', { replace: true });
+  }, [selectedCourtId, navigate]);
+
   const court = courts.find((c) => c.id === selectedCourtId);
   const total = priceFor(court, durationMins);
   const endTime = addMinutes(startTime, durationMins);
+
+  if (!selectedCourtId) return null;
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center bg-surface text-on-surface antialiased">
@@ -116,7 +123,7 @@ export function Receipt() {
               <ReceiptField label="Court" value={court?.name ?? ''} primary />
               <ReceiptField label="Date" value={selectedDate?.fullLabel ?? ''} />
               <ReceiptField label="Time Slot" value={`${startTime} - ${endTime}`} />
-              <ReceiptField label="Duration" value={`${durationMins} Minutes`} />
+              <ReceiptField label="Duration" value={formatDuration(durationMins)} />
             </div>
 
             <div className="relative mb-lg border-t border-dashed border-outline-variant">

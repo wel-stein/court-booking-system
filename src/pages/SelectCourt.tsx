@@ -4,7 +4,7 @@ import { ProgressBar } from '../components/ProgressBar';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
 import { priceFor, useBooking } from '../state/BookingContext';
-import { addMinutes, courts, type Court } from '../data/courts';
+import { addMinutes, courts, formatDuration, type Court } from '../data/courts';
 
 const statusBarColor: Record<Court['status'], string> = {
   available: 'bg-primary-container',
@@ -144,7 +144,7 @@ export function SelectCourt() {
         <div className="flex items-center gap-sm">
           <Icon name="calendar_today" className="text-xl" />
           <p className="font-label text-label-lg">
-            {dateLabel} | {startTime} - {endTime} ({durationMins} Mins)
+            {dateLabel} | {startTime} - {endTime} ({formatDuration(durationMins)})
           </p>
         </div>
       </div>

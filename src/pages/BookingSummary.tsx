@@ -6,7 +6,7 @@ import { PriceCard } from '../components/PriceCard';
 import { BottomActionBar } from '../components/BottomActionBar';
 import { Icon } from '../components/Icon';
 import { priceFor, useBooking } from '../state/BookingContext';
-import { addMinutes, courts } from '../data/courts';
+import { addMinutes, courts, formatDuration } from '../data/courts';
 
 export function BookingSummary() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export function BookingSummary() {
             <DetailRow label="Court" value={`${court?.name} - ${court?.type}`} />
             <DetailRow label="Date" value={selectedDate?.fullLabel ?? ''} />
             <DetailRow label="Time" value={`${startTime} - ${endTime}`} />
-            <DetailRow label="Duration" value={`${durationMins} Mins`} last />
+            <DetailRow label="Duration" value={formatDuration(durationMins)} last />
           </div>
         </section>
 
